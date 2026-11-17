@@ -85,5 +85,43 @@ public class ProyectoGrafos {
      grafoEdificios.establecerPonderacion(6, 7, 530); //  Polideportivo  - CEDIPE
      
      grafoEdificios.Kruskal();
+     
+     
+     
+     
+     
+     Grafo grafoPruebaCaminoCorto = new Grafo(8, true, true);
+     grafoPruebaCaminoCorto.insertarVertices(8);
+     
+     //asignamos nombres a los edificios
+     grafoPruebaCaminoCorto.asignarNombreVertice(0, "Biblioteca");
+     grafoPruebaCaminoCorto.asignarNombreVertice(1, "CAD");
+     grafoPruebaCaminoCorto.asignarNombreVertice(2, "CISCO");
+     grafoPruebaCaminoCorto.asignarNombreVertice(3, "Registro Escolar");
+     grafoPruebaCaminoCorto.asignarNombreVertice(4, "Comedor");
+     grafoPruebaCaminoCorto.asignarNombreVertice(5, "Cafeteria");
+     grafoPruebaCaminoCorto.asignarNombreVertice(6, "Polideportivo");
+     grafoPruebaCaminoCorto.asignarNombreVertice(7, "CEDIPE");
+     
+     //creamos las conexiones entre edificios 
+     grafoPruebaCaminoCorto.insertarArista(0, 1); //Biblioteca al CAD
+     grafoPruebaCaminoCorto.insertarArista(1, 2); //Cad a la Cisco
+     grafoPruebaCaminoCorto.insertarArista(2, 4); //Cisco al Comedor
+     grafoPruebaCaminoCorto.insertarArista(1, 3); //CAD al Registro E
+     grafoPruebaCaminoCorto.insertarArista(4, 3); //Comedro al Registro Escolar
+     grafoPruebaCaminoCorto.insertarArista(3, 5); //Registro Escolar al Cafeteria
+     grafoPruebaCaminoCorto.insertarArista(4, 5); //Comedor a la Cafetería
+        
+     // establecemos las ponderaciones de las aristas
+     grafoPruebaCaminoCorto.establecerPonderacion(0, 1, 4); // A -> B
+     grafoPruebaCaminoCorto.establecerPonderacion(1, 2, 3); // B -> C
+     grafoPruebaCaminoCorto.establecerPonderacion(2, 4, 5); // C -> E
+     grafoPruebaCaminoCorto.establecerPonderacion(1, 3, 2); // B -> D
+     grafoPruebaCaminoCorto.establecerPonderacion(4, 3, 2); // E -> D
+     grafoPruebaCaminoCorto.establecerPonderacion(3, 5, 4); // D -> F
+     grafoPruebaCaminoCorto.establecerPonderacion(4, 5, 4); // E -> F
+     
+     System.out.println("CAMINOS Cortos: ");
+     grafoPruebaCaminoCorto.caminosCortosDAG(0);
     }
 }

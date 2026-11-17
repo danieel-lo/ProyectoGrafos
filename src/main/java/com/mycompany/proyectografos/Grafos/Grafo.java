@@ -109,9 +109,10 @@ public class Grafo {
             System.out.println("Uno de los vertices no existe");
             return;
         }
-        // Validamos que el peso sea mayor que cero
-        if (peso <= 0) {
-            System.out.println("El peso debe ser mayor que 0");
+        // El cero representa que no hay arista en la matriz. Se permiten
+        // pesos negativos, necesarios para el calculo de camino critico en DAGs.
+        if (peso == 0) {
+            System.out.println("El peso no puede ser 0");
             return;
         }
         //validamos que exista una conexion entre los vertices que se les quiera agregar un peso 
@@ -314,6 +315,68 @@ public class Grafo {
         }
         //devolvemos el orden topologico 
         return orden;
+    }
+
+    /**
+     * Calcula los caminos de menor peso desde un vertice inicial en un DAG.
+     * Recorre los vertices en orden topologico y relaja cada arista saliente.
+     */
+    public void caminosCortosDAG(int inicio) {
+        //primero verifica que sea dirigido y ponderado
+        if (!dirigido || !ponderado) {
+            System.out.println("Caminos cortos en DAG requiere un grafo dirigido y ponderado");
+            return;
+        }
+        //verifica que el origen si exista
+        if (inicio < 0 || inicio >= numVertices) {
+            System.out.println("El vertice inicial no existe");
+            return;
+        }
+        //extrae el orden lineal con el metodo de ordentopologico
+        int[] orden = ordenTopologico();
+        if (orden.length != numVertices) {
+            // ordenTopologico ya informa si el grafo tiene ciclos.
+            return;
+        }
+
+        //variable con valor infinito
+        final long infinito = Long.MAX_VALUE;
+        long[] distancia = new long[numVertices]; //arreglo con espacio para cada vertice
+        int[] predecesor = new int[numVertices]; //arreglo para guardar predecesores
+        Arrays.fill(distancia, infinito); //seteamos todos loas distancias en infinito
+        Arrays.fill(predecesor, -1); //seteamos todos los predecesores como null
+        distancia[inicio] = 0; //seteamos el origen en 0
+
+        // En un DAG con relajar una vez cada vertice en orden topologico.
+        for (int u : orden) {
+            if (distancia[u] == infinito) {
+                continue;
+            }
+            for (int v = 0; v < numVertices; v++) {
+                if (matriz[u][v] != 0) {
+                    long alternativa = distancia[u] + matriz[u][v];
+                    if (alternativa < distancia[v]) {
+                        distancia[v] = alternativa;
+                        predecesor[v] = u;
+                    }
+                }
+            }
+        }
+
+        System.out.println("Caminos cortos desde " + nombreVertices[inicio] + ":");
+        for (int destino = 0; destino < numVertices; destino++) {
+            if (distancia[destino] == infinito) {
+                System.out.println(nombreVertices[destino] + ": no es alcanzable");
+                continue;
+            }
+
+            List<String> ruta = new ArrayList<>();
+            for (int actual = destino; actual != -1; actual = predecesor[actual]) {
+                ruta.add(nombreVertices[actual]);
+            }
+            Collections.reverse(ruta);
+            System.out.println(nombreVertices[destino] + "  costo: " + distancia[destino] + " | ruta: " + String.join(" - ", ruta));
+        }
     }
 
     // clase auxiliar para representar una arista con peso (Kruskal)
