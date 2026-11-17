@@ -72,8 +72,11 @@ public class ProyectoGrafos {
             System.out.print((char) ('A' + orden[i]) + ", ");
         }
         
-     // Requerimientos 7 
-     // Se asignan las distancias en metros entre edificios 
+        
+     
+        
+     
+     // Se asignan las distancias en metros entre edificios para Prim- Kruska
      grafoEdificios.establecerPonderacion(0, 1, 120); // Biblioteca - CAD
      grafoEdificios.establecerPonderacion(0, 5, 80); // Biblioteca - Cafeteroa
      grafoEdificios.establecerPonderacion(1, 2, 100); // CAD - CISCO
@@ -83,7 +86,12 @@ public class ProyectoGrafos {
      grafoEdificios.establecerPonderacion(4, 5, 70); // Comedor - Cafeteria
      grafoEdificios.establecerPonderacion(4, 6, 150); // Comedor -  Polideportivo 
      grafoEdificios.establecerPonderacion(6, 7, 530); //  Polideportivo  - CEDIPE
+    
+     // Requerimientos 6 
+     // Algoritmo de prim iniciando desde biblioteca = 0;
+     grafoEdificios.prim(0);
      
+     // Requerimientos 7 
      grafoEdificios.Kruskal();
      
      

@@ -463,4 +463,78 @@ public class Grafo {
         int raizV = encontrarConjunto(conjunto, v);
         conjunto[raizU] = raizV;
     }
+    
+    // Algoritmo de PRIM (MST)
+    public void prim(int inicio){
+        if(dirigido || !ponderado){
+            System.out.println("Prim necesita un grafo no dirigido y ponderado");
+            return;
+        }
+        if(inicio<0 || inicio >= numVertices){
+            System.out.println("El vertice no existe");
+            return;
+        }
+        
+        // Guarda el peso minimo de cada vertice
+        int[] llave = new int[numVertices];
+        // Guarda el padre de cada vertice 
+        int[] padre = new int[numVertices];
+        // indica que vertices siguen por agregar al arbol
+        boolean[] enCola = new boolean[numVertices];
+        
+        // Se inicializa todos en "Infinito", padres "nil" y todos en cola
+        for(int u=0; u<numVertices; u++){
+            llave[u]=Integer.MAX_VALUE;
+            padre[u]=-1;
+            enCola[u] = true;
+        }
+        
+        // La llave del vertice raiz se pone en 0
+        llave[inicio]= 0;
+        
+        for(int i =0; i<numVertices;i++){
+            int u = extraerMinimo(llave, enCola);
+            
+           if(u==-1){
+               break;
+           } 
+           
+           // se saca de la cola
+           enCola[u] = false;
+           
+           // Se rrecoren los vecinos de v a u
+           for(int v = 0; v< numVertices; v++){
+               // si existe conexion, v sigue en la cola y el peso de (u,v) es menor a la llave
+               if(matriz[u][v] != 0 && enCola[v] && matriz[u][v] < llave[v]){
+                   padre[v] = u;
+                   llave[v] =matriz[u][v];
+               }
+           }
+        }
+        
+        // Se muestra las conexiones y el total del cableado 
+        System.out.println("Arbol de expansion minima (MST) por Prim ");
+        int costoTotal = 0;
+        for (int i = 0; i < numVertices; i++){
+            if(padre[i] != -1){
+            System.out.println(nombreVertices[padre[i]] + " <--> " + nombreVertices[i] + "    Distancia:  " + llave[i] + "m");
+            costoTotal += llave[i];
+            }
+        }
+        System.out.println("Total de cableado necesario: " + costoTotal + "m");
+    }
+    
+    // Metodo auxiliar para extraer el minimo en Prim
+    private int extraerMinimo(int[] llave, boolean[] enCola){
+      int minimo = Integer.MAX_VALUE;
+      int indiceMinimo = -1;
+      
+      for(int v=0; v< numVertices; v++){
+          if (enCola[v] && llave[v]<minimo){
+              minimo = llave[v];
+              indiceMinimo = v;
+          }
+      }
+      return indiceMinimo;
+    }
 }
