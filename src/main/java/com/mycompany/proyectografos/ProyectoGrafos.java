@@ -71,5 +71,19 @@ public class ProyectoGrafos {
         for (int i = 0; i < orden.length; i++) {
             System.out.print((char) ('A' + orden[i]) + ", ");
         }
+        
+     // Requerimientos 7 
+     // Se asignan las distancias en metros entre edificios 
+     grafoEdificios.establecerPonderacion(0, 1, 120); // Biblioteca - CAD
+     grafoEdificios.establecerPonderacion(0, 5, 80); // Biblioteca - Cafeteroa
+     grafoEdificios.establecerPonderacion(1, 2, 100); // CAD - CISCO
+     grafoEdificios.establecerPonderacion(1, 6, 200); // CAD - Polideportivo 
+     grafoEdificios.establecerPonderacion(2, 3, 90); // CAD - Registro escolar 
+     grafoEdificios.establecerPonderacion(3, 4, 110); // Registro escolar - Comedor
+     grafoEdificios.establecerPonderacion(4, 5, 70); // Comedor - Cafeteria
+     grafoEdificios.establecerPonderacion(4, 6, 150); // Comedor -  Polideportivo 
+     grafoEdificios.establecerPonderacion(6, 7, 530); //  Polideportivo  - CEDIPE
+     
+     grafoEdificios.Kruskal();
     }
 }

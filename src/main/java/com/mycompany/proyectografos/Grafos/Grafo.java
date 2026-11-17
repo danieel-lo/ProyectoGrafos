@@ -5,8 +5,11 @@
 package com.mycompany.proyectografos.Grafos;
 
 import java.util.ArrayDeque;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Queue;
 
 /**
@@ -293,19 +296,19 @@ public class Grafo {
             //recorremos la conexiones del vertice actual
             for (int j = 0; j < numVertices; j++) {
                 //verificamos si existe una arista del vertice actual hacia j
-                if(matriz[actual][j]!=0){
+                if (matriz[actual][j] != 0) {
                     //disminuimos el grado de entrada del vertice destino
                     gradosEntrada[j]--;
                     //si el grado de entrada llega a 0 lo agregamos a la cola 
-                    if(gradosEntrada[j]==0){
+                    if (gradosEntrada[j] == 0) {
                         cola.add(j);
                     }
-                    
+
                 }
             }
         }
         //verificamos si se procesaron todos los vertices 
-        if(posicion!=numVertices){
+        if (posicion != numVertices) {
             System.out.println("El grafo contiene ciclos");
             return new int[0];
         }
@@ -313,4 +316,88 @@ public class Grafo {
         return orden;
     }
 
+    // clase auxiliar para representar una arista con peso (Kruskal)
+    private static class Arista implements Comparable<Arista> {
+
+        int origen;
+        int destino;
+        int peso;
+
+        public Arista(int origen, int destino, int peso) {
+            this.origen = origen;
+            this.destino = destino;
+            this.peso = peso;
+        }
+
+        @Override
+        public int compareTo(Arista otra) {
+            return Integer.compare(this.peso, otra.peso);
+        }
+    }
+
+    public void Kruskal() {
+        if (dirigido || !ponderado) {
+            System.out.println("Kruskal requiere un grafo no dirigido y ponderado");
+            return;
+        }
+
+        // Lista que guarda las aristas del MST
+        List<Arista> resultadoA = new ArrayList<>();
+
+        // Cada arista es un conjunto unico al comienzo 
+        int[] conjunto = new int[numVertices];
+        for (int v = 0; v < numVertices; v++) {
+            conjunto[v] = v;
+        }
+
+        // Gurda todas las aristas en una lista para ser ordenadas
+        List<Arista> aristas = new ArrayList<>();
+        for (int u = 0; u < numVertices; u++) {
+            for (int v = u + 1; v < numVertices; v++) {
+                if (matriz[u][v] != 0) {
+                    aristas.add(new Arista(u, v, matriz[u][v]));
+                }
+            }
+        }
+        
+        // ordena las aristas de menor a mayor
+        Collections.sort(aristas);
+        
+        for(Arista arista : aristas){
+            int u = arista.origen;
+            int v = arista.destino;
+            
+            //Se verifica que no sea un ciclo
+            if (encontrarConjunto(conjunto,u) != encontrarConjunto(conjunto, v)){
+                // Se agrega la arista en conjunto
+                resultadoA.add(arista);
+                // hace la union de ambos conjuntos
+                unirConjuntos(conjunto, u, v);
+            }
+        }
+        
+        System.out.println("Arbol de expansion minima (MST) por kruskal");
+        int costoTotal = 0;
+        for (Arista arista : resultadoA){
+            System.out.println(nombreVertices[arista.origen] + " <-> "+ nombreVertices[arista.destino] +"    Distancia:  " + arista.peso + " m");
+            costoTotal += arista.peso;
+        }
+        System.out.println("Total de cableado necesario: " + costoTotal + "m");
+    }
+    
+    // Metodos auxiliares Kruskal
+    // Metodo para encontrar el "lider" del conjunto
+    private int encontrarConjunto(int[] conjunto, int v){
+        if(conjunto[v]==v){
+            return v;
+        }
+        return conjunto[v]= encontrarConjunto(conjunto, conjunto[v]);
+    }
+
+    // une dos conjuntos despues de ser confirmado en Kruskal
+    private void unirConjuntos(int[] conjunto, int u, int v){
+        int raizU = encontrarConjunto(conjunto, u);
+        int raizV = encontrarConjunto(conjunto, v);
+        conjunto[raizU] = raizV;
+    }
 }
