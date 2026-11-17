@@ -379,6 +379,81 @@ public class Grafo {
         }
     }
 
+    /**
+     * Calcula los caminos de menor peso desde el vertice inicial usando Dijkstra
+     * Este algoritmo requiere que todos los pesos sean no negativos
+     */
+    public void dijkstra(int inicio) {
+        if (!ponderado) {
+            System.out.println("Dijkstra ocupa un grafo ponderado");
+            return;
+        }
+        if (inicio < 0 || inicio >= numVertices) {
+            System.out.println("el vertice origen no existe");
+            return;
+        }
+
+        // Dijkstra no funciona correctamente si alguna arista tiene peso negativo
+        for (int u = 0; u < numVertices; u++) {
+            for (int v = 0; v < numVertices; v++) {
+                if (matriz[u][v] < 0) {
+                    System.out.println("Dijkstra no procesa pesos negativos");
+                    return;
+                }
+            }
+        }
+
+        final long infinito = Long.MAX_VALUE;
+        long[] distancia = new long[numVertices];
+        int[] predecesor = new int[numVertices];
+        boolean[] visitado = new boolean[numVertices];
+        Arrays.fill(distancia, infinito);
+        Arrays.fill(predecesor, -1);
+        distancia[inicio] = 0;
+
+        // En cada vuelta elegimos el vertice pendiente con menor distancia
+        for (int paso = 0; paso < numVertices; paso++) {
+            int u = -1;
+            for (int i = 0; i < numVertices; i++) {
+                if (!visitado[i] && (u == -1 || distancia[i] < distancia[u])) {
+                    u = i;
+                }
+            }
+
+            // Si el menor costo sigue en infinito, los restantes son inalcanzables
+            if (u == -1 || distancia[u] == infinito) {
+                break;
+            }
+            visitado[u] = true;
+
+            // Revisamos las aristas que salen de u y relajamos
+            for (int v = 0; v < numVertices; v++) {
+                if (!visitado[v] && matriz[u][v] != 0) {
+                    long alternativa = distancia[u] + matriz[u][v];
+                    if (alternativa < distancia[v]) {
+                        distancia[v] = alternativa;
+                        predecesor[v] = u;
+                    }
+                }
+            }
+        }
+
+        System.out.println("Caminos cortos desde " + nombreVertices[inicio] + " (Dijkstra):");
+        for (int destino = 0; destino < numVertices; destino++) {
+            if (distancia[destino] == infinito) {
+                System.out.println(nombreVertices[destino] + ": no es alcanzable");
+                continue;
+            }
+
+            List<String> ruta = new ArrayList<>();
+            for (int actual = destino; actual != -1; actual = predecesor[actual]) {
+                ruta.add(nombreVertices[actual]);
+            }
+            Collections.reverse(ruta);
+            System.out.println(nombreVertices[destino] + " | distancia: " + distancia[destino] + " | ruta: " + String.join(" -> ", ruta));
+        }
+    }
+
     // clase auxiliar para representar una arista con peso (Kruskal)
     private static class Arista implements Comparable<Arista> {
 

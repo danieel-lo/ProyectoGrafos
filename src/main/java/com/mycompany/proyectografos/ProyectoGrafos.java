@@ -73,7 +73,7 @@ public class ProyectoGrafos {
         }
         
         
-     
+     System.out.println("------------------------------------");
         
      
      // Se asignan las distancias en metros entre edificios para Prim- Kruska
@@ -91,12 +91,14 @@ public class ProyectoGrafos {
      // Algoritmo de prim iniciando desde biblioteca = 0;
      grafoEdificios.prim(0);
      
+    System.out.println("------------------------------------");     
+     
      // Requerimientos 7 
      grafoEdificios.Kruskal();
      
      
      
-     
+     System.out.println("------------------------------------");
      
      Grafo grafoPruebaCaminoCorto = new Grafo(8, true, true);
      grafoPruebaCaminoCorto.insertarVertices(8);
@@ -131,5 +133,11 @@ public class ProyectoGrafos {
      
      System.out.println("CAMINOS Cortos: ");
      grafoPruebaCaminoCorto.caminosCortosDAG(0);
+     
+     
+     System.out.println("------------------------------------");
+     System.out.println("algoritmo dijkstra ");
+     grafoEdificios.dijkstra(0);
+     
     }
 }
