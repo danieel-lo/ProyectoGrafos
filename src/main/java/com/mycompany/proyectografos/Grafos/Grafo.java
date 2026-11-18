@@ -10,6 +10,7 @@ import java.util.Arrays;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.PriorityQueue;
 import java.util.Queue;
 
 /**
@@ -411,17 +412,19 @@ public class Grafo {
         Arrays.fill(predecesor, -1);
         distancia[inicio] = 0;
 
-        // En cada vuelta elegimos el vertice pendiente con menor distancia
-        for (int paso = 0; paso < numVertices; paso++) {
-            int u = -1;
-            for (int i = 0; i < numVertices; i++) {
-                if (!visitado[i] && (u == -1 || distancia[i] < distancia[u])) {
-                    u = i;
-                }
-            }
+        // Q guarda todos los vertices pendientes y prioriza el de menor distancia.
+        PriorityQueue<Integer> cola = new PriorityQueue<>(
+                (a, b) -> Long.compare(distancia[a], distancia[b]));
+        for (int i = 0; i < numVertices; i++) {
+            cola.add(i);
+        }
 
-            // Si el menor costo sigue en infinito, los restantes son inalcanzables
-            if (u == -1 || distancia[u] == infinito) {
+        while (!cola.isEmpty()) {
+            // Extraemos de Q el vertice pendiente con menor distancia.
+            int u = cola.poll();
+
+            // Si su distancia es infinita, los vertices restantes son inalcanzables.
+            if (distancia[u] == infinito) {
                 break;
             }
             visitado[u] = true;
@@ -431,8 +434,11 @@ public class Grafo {
                 if (!visitado[v] && matriz[u][v] != 0) {
                     long alternativa = distancia[u] + matriz[u][v];
                     if (alternativa < distancia[v]) {
+                        // Se saca y vuelve a insertar para actualizar su prioridad en Q.
+                        cola.remove(v);
                         distancia[v] = alternativa;
                         predecesor[v] = u;
+                        cola.add(v);
                     }
                 }
             }
